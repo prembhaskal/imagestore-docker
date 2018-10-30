@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: imagestore
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - command:
+        - rabbitmq-server
+        - --hostname
+        - my-rabbit
+        - --name
+        - some-rabbit
+        image: rabbitmq:3.7.3-alpine
+        imagePullPolicy: IfNotPresent
+        name: rabbitmq
+        ports:
+        - containerPort: 5672
+          name: client
+          protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-ser
+  namespace: imagestore
+  labels:
+    app: rabbitmq
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5672
+    protocol: TCP
+  selector:
+    app: rabbitmq
+
+      

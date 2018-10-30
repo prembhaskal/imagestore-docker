@@ -10,6 +10,25 @@ eval $(minikube docker-env)
 # namespace: imagestore
     kubectl create -f imagestore-namespace.yaml
 
+# event publish/subscribe using rmq
+    kubectl create -f rabbitmq.yaml
+	kubectl get deployment --namespace=imagestore
+	kubectl get pods --namespace=imagestore
+	kubectl get service --namespace=imagestore
+	
+# set up the rabbit mq (one time job)
+      kubectl exec --namespace=imagestore -it <podname> -- /bin/bash
+        eg. kubectl exec --namespace=imagestore -it rabbitmq-76d5dd5ccf-bbtbm -- /bin/bash
+	  rabbitmqctl list_users
+	  rabbitmqctl add_user prem prem
+	  rabbitmqctl set_user_tags prem administrator
+	  rabbitmqctl set_permissions -p / prem ".*" ".*" ".*"
+	  rabbitmqctl list_users
+	
+# clean up rabbit mq (for redeployment/error checks etc)
+    kubectl delete deployment rabbitmq --namespace=imagestore
+    kubectl delete service rabbitmq-ser --namespace=imagestore
+	
 # persistent volume creation  -- this is mounted at /tmp/data in minikube host vm (see file for details)
 	https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
 ##  create the mount directory in minikube 
@@ -64,4 +83,9 @@ eval $(minikube docker-env)
   kubectl delete pod --namespace=imagestore imagestore-7c68dd987-t8n8m
   
   http://192.168.99.100:32443/getAlbumImages?albumName=prem
+  
+# stop minikube
+  minikube stop
+  
+
   
