@@ -18,7 +18,9 @@ eval $(minikube docker-env)
 	
 # set up the rabbit mq (one time job)
       kubectl exec --namespace=imagestore -it <podname> -- /bin/bash
-        eg. kubectl exec --namespace=imagestore -it rabbitmq-76d5dd5ccf-bbtbm -- /bin/bash
+        eg. 
+		  kubectl exec --namespace=imagestore -it rabbitmq-8b5ccc99-xslxw -- /bin/bash
+		  
 	  rabbitmqctl list_users
 	  rabbitmqctl add_user prem prem
 	  rabbitmqctl set_user_tags prem administrator
