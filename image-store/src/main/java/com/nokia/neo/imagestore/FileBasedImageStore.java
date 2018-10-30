@@ -17,16 +17,16 @@ import java.util.List;
 @Component
 public class FileBasedImageStore implements ImageStorageService {
 
-    public final static String IMAGE_DIR = "d:/tmp/neotest/";
+//    public final static String IMAGE_DIR = "d:/tmp/neotest/";
+    public final static String IMAGE_DIR = "/usr/share/neo/";
     public final static String DEFAULT_ALBUM = "";
 
     @Override
     public synchronized void storeImage(MultipartFile file, String imageName, String albumName) throws ImageStoreException {
-        if (file == null) {
-            throw new IllegalArgumentException("file cannot be null");
-        }
-
+        doFileChecks(file);
         doEmptyNullChecks(imageName, albumName);
+
+        System.out.println(String.format("storing image with name:%s in album:%s", imageName, albumName));
 
         File albumDir = new File(IMAGE_DIR, albumName);
 
@@ -37,10 +37,10 @@ public class FileBasedImageStore implements ImageStorageService {
         if (!albumDir.exists()) {
             boolean albumCreated = albumDir.mkdir();
             if (albumCreated) {
-                System.out.println("INFO - album created : " + albumName);
+                System.out.println("album created : " + albumName);
             }
             else {
-                System.out.println("INFO - album not create, may be it is already present or there is some other error: " + albumName);
+                System.out.println("album not create, may be it is already present or there is some other error: " + albumName);
             }
         }
 
@@ -61,9 +61,17 @@ public class FileBasedImageStore implements ImageStorageService {
         }
     }
 
+    private void doFileChecks(MultipartFile file) {
+        if (file == null) {
+            throw new IllegalArgumentException("file cannot be null");
+        }
+    }
+
     @Override
     public synchronized Resource getImage(String imageName, String albumName) throws ImageStoreException {
         doEmptyNullChecks(imageName, albumName);
+
+        System.out.println(String.format("getting image with name:%s and album:%s", imageName, albumName));
 
         File imageDir = new File(IMAGE_DIR, albumName);
         File imageFile = new File(imageDir, imageName);
@@ -96,8 +104,10 @@ public class FileBasedImageStore implements ImageStorageService {
     @Override
     public synchronized List<String> getImagesInAlbum(String albumName) {
         doAlbumNullCheck(albumName);
-        List<String> imageNames = new ArrayList<>();
 
+        System.out.println(String.format("getting images in album:%s", albumName));
+
+        List<String> imageNames = new ArrayList<>();
         File albumDir = new File(IMAGE_DIR, albumName);
         File[] imgFiles = albumDir.listFiles();
         if (imgFiles != null) {
@@ -114,6 +124,9 @@ public class FileBasedImageStore implements ImageStorageService {
     @Override
     public synchronized void deleteImage(String imageName, String albumName) throws ImageStoreException {
         doEmptyNullChecks(imageName, albumName);
+
+        System.out.println(String.format("deleting image with name:%s from album:%s", imageName, albumName));
+
         File albumDir = new File(IMAGE_DIR, albumName);
         File imageFile = new File(albumDir, imageName);
 
@@ -129,6 +142,8 @@ public class FileBasedImageStore implements ImageStorageService {
     @Override
     public synchronized void deleteAlbum(String albumName) throws ImageStoreException {
         doAlbumNullCheck(albumName);
+
+        System.out.println(String.format("deleting album:%s", albumName));
 
         File albumDir = new File(IMAGE_DIR, albumName);
         File[] imgFiles = albumDir.listFiles();

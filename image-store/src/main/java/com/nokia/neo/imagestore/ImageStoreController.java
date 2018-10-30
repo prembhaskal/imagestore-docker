@@ -66,7 +66,7 @@ public class ImageStoreController {
     public List<String> getImagesInAlbum(@RequestParam(value = "albumName", required = false, defaultValue = DEFAULT_ALBUM) String albumName) {
         return imageStoreService.getImagesInAlbum(albumName);
     }
-    
+
 
 
 
