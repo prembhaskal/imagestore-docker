@@ -26,8 +26,8 @@ import static com.nokia.neo.events.StoreEvent.EventType.*;
 @Component
 public class FileBasedImageStore implements ImageStorageService {
 
-    public final static String IMAGE_DIR = "d:/tmp/neotest/";
-   // public final static String IMAGE_DIR = "/usr/share/neo/";
+    // public final static String IMAGE_DIR = "d:/tmp/neotest/";
+    public final static String IMAGE_DIR = "/usr/share/neo/";
     public final static String DEFAULT_ALBUM = "";
     private final EventPublisher eventPublisher;
 
@@ -44,7 +44,7 @@ public class FileBasedImageStore implements ImageStorageService {
         System.out.println(String.format("storing image with name:%s in album:%s", imageName, albumName));
 
         File albumDir = new File(IMAGE_DIR, albumName);
-        doDirectoryChecks(albumName, albumDir);
+        doAlbumExistsCheck(albumName, albumDir);
 
         try {
             createDirectoryIfNotPresent(albumName, albumDir);
@@ -72,9 +72,7 @@ public class FileBasedImageStore implements ImageStorageService {
         File imageDir = new File(IMAGE_DIR, albumName);
         File imageFile = new File(imageDir, imageName);
 
-        if (!imageFile.exists() || !imageFile.isFile()) {
-            throw new ImageStoreException("No such image file exists : " + imageName);
-        }
+        doImageExistsCheck(imageName, imageFile);
 
         try {
             FileSystemResource fileSystemResource = new FileSystemResource(imageFile);
@@ -88,6 +86,12 @@ public class FileBasedImageStore implements ImageStorageService {
 
     }
 
+    private void doImageExistsCheck(String imageName, File imageFile) throws ImageStoreException {
+        if (!imageFile.exists() || !imageFile.isFile()) {
+            throw new ImageStoreException("No such image file exists : " + imageName);
+        }
+    }
+
     @Override
     public synchronized List<String> getImagesInAlbum(String albumName) {
         doAlbumNullCheck(albumName);
@@ -96,6 +100,8 @@ public class FileBasedImageStore implements ImageStorageService {
 
         List<String> imageNames = new ArrayList<>();
         File albumDir = new File(IMAGE_DIR, albumName);
+        doAlbumExistsCheck(albumName, albumDir);
+
         File[] imgFiles = albumDir.listFiles();
         if (imgFiles != null) {
             for (File imgFile : imgFiles) {
@@ -164,7 +170,7 @@ public class FileBasedImageStore implements ImageStorageService {
     }
 
 
-    private void doDirectoryChecks(String albumName, File albumDir) {
+    private void doAlbumExistsCheck(String albumName, File albumDir) {
         if (albumDir.exists() && !albumDir.isDirectory()) {
             throw new RuntimeException("Album directory cannot be created. a regular file with same name exists " + albumName);
         }

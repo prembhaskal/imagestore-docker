@@ -15,6 +15,15 @@ spec:
       labels:
         app: rabbitmq
     spec:
+      initContainers:
+        - name: copy-rabbitmq-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /etc/rabbitmq              
       containers:
       - command:
         - rabbitmq-server
@@ -29,6 +38,15 @@ spec:
         - containerPort: 5672
           name: client
           protocol: TCP
+        volumeMounts:
+          - name: config
+            mountPath: /etc/rabbitmq
+      volumes:
+      - name: config
+        emptyDir: {}
+      - name: configmap
+        configMap:
+          name: rmq-config
 
 ---
 
