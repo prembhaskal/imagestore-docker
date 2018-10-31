@@ -5,5 +5,5 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 public interface EventPublisher {
-    void sendEvent(String message) throws IOException;
+    void sendEvent(StoreEvent storeEvent) throws IOException;
 }

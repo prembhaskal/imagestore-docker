@@ -1,13 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.nokia.neo</groupId>
-    <artifactId>image-store</artifactId>
+    <artifactId>imagestore-events</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-
-    <name>image-store</name>
+    <name>imagestore-events</name>
     <url>http://maven.apache.org</url>
 
 
@@ -67,7 +65,7 @@
     </properties>
 
     <build>
-        <finalName>com.nokia.neo.imagestore</finalName>
+        <finalName>com.nokia.neo.imagestore-events</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -88,4 +86,5 @@
             <url>https://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
+
 </project>

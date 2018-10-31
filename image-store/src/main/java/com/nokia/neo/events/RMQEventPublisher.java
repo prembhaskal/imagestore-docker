@@ -1,5 +1,6 @@
 package com.nokia.neo.events;
 
+import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -15,8 +16,11 @@ public class RMQEventPublisher implements EventPublisher {
 
     private final Connection connection;
     private final Channel channel;
+    private final Gson gson;
 
     public RMQEventPublisher() throws Exception {
+
+        gson = new Gson();
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(AppProperties.getRabbitMQHost());
         factory.setPort(AppProperties.getRabbitMQPort());
@@ -29,8 +33,9 @@ public class RMQEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void sendEvent(String message) throws IOException {
+    public synchronized void sendEvent(StoreEvent storeEvent) throws IOException {
         try {
+            String message = gson.toJson(storeEvent);
             channel.basicPublish("", IMAGESTORE_QUEUE, null, message.getBytes(StandardCharsets.UTF_8));
             System.out.println(" [x] Sent '" + message + "'");
 
