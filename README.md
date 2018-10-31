@@ -1,12 +1,30 @@
 # imagestore-docker
-image store application in docker
+image store application in docker.
+The image store application consists of 3 components here
+
+- Image Store app
+- Rabbit MQ Event Server
+- Image Store Event app
+
+## Image store app
+The images store app lets user manage images into albums. It lets user store,delete,retreive images. It allows to list images in albums and delete album.
+It publishes the different events on the Rabbit MQ Event server.
+The images are stored in mounted file system thus allowing persistence.
+Images are stored as files. Albums are the directories.
+
+## Rabbit MQ Event server
+rabbit mq server which acts as event pipe.
+
+## Image Store Event app
+A consumer of the image store events. It keeps a count (non-persistent) of the different kind of image store events.
+
 
 # Deployment steps
 ## setup minikube and kubectl
-minikube start
+	minikube start
 
 ## point to docker inside minikube
-eval $(minikube docker-env)
+	eval $(minikube docker-env)
 
 ## create namespace: imagestore
     kubectl create -f imagestore-namespace.yaml
@@ -79,7 +97,7 @@ eval $(minikube docker-env)
   eg.http://192.168.99.100:30000/#!/overview?namespace=default
   
 ## stop minikube
-  minikube stop
+	minikube stop
 
 # API usage
 
