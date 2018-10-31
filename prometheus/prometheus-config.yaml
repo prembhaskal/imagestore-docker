@@ -1,0 +1,24 @@
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+apiVersion: v1
+data:
+  prometheus.yml: |-
+    global:
+      scrape_interval: 30s
+      scrape_timeout: 30s
+    scrape_configs:
+    
+    - job_name: 'prometheus'
+      # metrics_path defaults to '/metrics'
+      # scheme defaults to 'http'.
+      static_configs:
+        - targets: ['localhost:9090']
+        
+    - job_name: 'service_scrape'
+      # metrics_path defaults to '/metrics'
+      # scheme defaults to 'http'.
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['imagestore-ser.imagestore:8080']

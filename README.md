@@ -11,6 +11,7 @@ The images store app lets user manage images into albums. It lets user store,del
 It publishes the different events on the Rabbit MQ Event server.
 The images are stored in mounted file system thus allowing persistence.
 Images are stored as files. Albums are the directories.
+It exposes metrics for prometheus using spring boot actuator and micrometer libraries
 
 ## Rabbit MQ Event server
 rabbit mq server which acts as event pipe.
@@ -90,6 +91,16 @@ A consumer of the image store events. It keeps a count (non-persistent) of the d
     kubectl delete deployment --namespace=imagestore imagestore-events
     kubectl delete service --namespace=imagestore imagestoreevents-ser
 	
+## Deploy prometheus
+   cd prometheus
+   kubectl create -f monitoring-namespace.yaml
+   kubectl create -f prometheus-config.yaml
+   kubectl create -f prometheus-deployment.yaml
+   kubectl create -f prometheus-service.yaml
+   
+### get prometheus port from the service
+   access the custom metrics from here
+   http://192.168.99.100:30911/graph?g0.range_input=1h&g0.expr=http_server_requests_seconds_count&g0.tab=1
 	
 ## minikube dashboard
   running below command will open dashboard in browser. url will similar to given below
